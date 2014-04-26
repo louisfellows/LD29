@@ -16,21 +16,19 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.louisfellows.ld29.LD29Screen;
 import com.louisfellows.ld29.entities.Entity;
 import com.louisfellows.ld29.entities.Explosion;
-import com.louisfellows.ld29.entities.Projectile;
 import com.louisfellows.ld29.entities.Sub;
-import com.louisfellows.ld29.screens.listeners.BattleScreenListener;
+import com.louisfellows.ld29.screens.listeners.BattleScreenEventsListener;
 import com.louisfellows.ld29.screens.listeners.ControlListener;
 import com.louisfellows.ld29.screens.listeners.ControllerListener;
 import com.louisfellows.ld29.screens.listeners.KeyboardListener;
 import com.louisfellows.ld29.sounds.BattleSound;
 import com.louisfellows.ld29.util.CollisionEdge;
 
-public class BattleScreen extends LD29Screen implements BattleScreenListener {
+public class BattleScreen extends LD29Screen {
 
     TiledMap map = new TiledMap();
     MapRenderer mapRenderer;
@@ -40,7 +38,8 @@ public class BattleScreen extends LD29Screen implements BattleScreenListener {
     Array<ControlListener> listeners = new Array<ControlListener>();
     Array<Sprite> nonGameSprites = new Array<Sprite>();
     boolean matchComplete = false;
-    BattleScreenListener soundScreen = new BattleSound();
+    BattleScreenEventsListener screenSounds = new BattleSound();
+    BattleScreenEventsListener screenEvents = new BattleScreenEvents(this);
 
     @Override
     public void render(float delta) {
@@ -157,7 +156,9 @@ public class BattleScreen extends LD29Screen implements BattleScreenListener {
 
     @Override
     public void show() {
-        map = getAssetManager().get("level.tmx");
+        Random r = new Random();
+        int level = r.nextInt(3) + 1;
+        map = getAssetManager().get("level" + level + ".tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
@@ -168,14 +169,14 @@ public class BattleScreen extends LD29Screen implements BattleScreenListener {
         l.addListener(sub);
         listeners.add(l);
 
-        sub = makeSub(new Color(0, 1, 0, 1), 1000, 40);
+        sub = makeSub(new Color(0, 1, 0, 1), 1170, 40);
 
         KeyboardListener kl = new KeyboardListener();
         kl.addListener(sub);
         listeners.add(kl);
 
-        sub = makeSub(new Color(0, 0, 1, 1), 1000, 200);
-        sub = makeSub(new Color(1, 0, 1, 1), 40, 200);
+        sub = makeSub(new Color(0, 0, 1, 1), 1170, 600);
+        sub = makeSub(new Color(1, 0, 1, 1), 40, 600);
 
     }
 
@@ -184,8 +185,7 @@ public class BattleScreen extends LD29Screen implements BattleScreenListener {
         sub.setColor(colour);
         sub.setX(x);
         sub.setY(y);
-        sub.addListener(this);
-        sub.addListener(soundScreen);
+        addListeners(sub);
 
         characters.add(sub);
         players.add(sub);
@@ -211,74 +211,14 @@ public class BattleScreen extends LD29Screen implements BattleScreenListener {
 
     }
 
-    @Override
-    public void launchTorpedo(Vector2 position, Vector2 direction) {
-        Entity torpedo = new Projectile((Texture) getAssetManager().get("torpedo.png"));
-
-        torpedo.setX(position.x + direction.x);
-        torpedo.setY(position.y + direction.y);
-
-        if (direction.x < 0) {
-            direction.x = -1;
-        } else if (direction.x > 0) {
-            direction.x = 1;
-        }
-        if (direction.y < 0) {
-            direction.y = -1;
-        } else if (direction.y > 0) {
-            direction.y = 1;
-        }
-
-        direction.y *= 75;
-        direction.x *= 75;
-
-        torpedo.setDirection(direction);
-
-        double angle = Math.atan2(-direction.x, direction.y) * 180 / Math.PI;
-
-        torpedo.rotate((float) angle - 90f);
-
-        torpedo.addListener(this);
-        torpedo.addListener(soundScreen);
-
-        characters.add(torpedo);
+    protected void addListeners(Entity entity) {
+        entity.addListener(screenEvents);
+        entity.addListener(screenSounds);
     }
 
-    @Override
-    public void drawExplosion(Vector2 position) {
-        Entity explosion = new Explosion((Texture) getAssetManager().get("explosion.png"));
-
-        explosion.setX(position.x);
-        explosion.setY(position.y);
-
-        explosion.setDirection(new Vector2());
-
-        explosion.addListener(this);
-
-        Random random = new Random();
-        explosion.rotate(random.nextInt(360));
-
-        characters.add(explosion);
+    protected void addCharacter(Entity entity) {
+        addListeners(entity);
+        characters.add(entity);
     }
 
-    @Override
-    public void outOfHealth(Sub entity) {
-        matchComplete = true;
-        for (ControlListener l : listeners) {
-            l.removeListener(entity);
-        }
-        players.removeValue(entity, true);
-
-        if (players.size == 1) {
-            displayVictoryScreen();
-        }
-    }
-
-    private void displayVictoryScreen() {
-        Sprite victorySprite = new Sprite((Texture) getAssetManager().get("victory.png"));
-        victorySprite.setColor(players.get(0).getColor());
-        victorySprite.setX((getWidth() - victorySprite.getWidth()) / 2);
-        victorySprite.setY((getHeight() - victorySprite.getHeight()) / 2);
-        nonGameSprites.add(victorySprite);
-    }
 }

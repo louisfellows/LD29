@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 
 public class KeyboardListener extends InputListener implements ControlListener {
+    private static final int MOVEMENT_INFLUENCE = 5;
     private final Array<SubActionListener> listeners = new Array<SubActionListener>();
 
     /*
@@ -25,15 +26,15 @@ public class KeyboardListener extends InputListener implements ControlListener {
         float y = 0;
 
         if (left && !right) {
-            x = -3;
+            x = -MOVEMENT_INFLUENCE;
         } else if (!left && right) {
-            x = 3;
+            x = MOVEMENT_INFLUENCE;
         }
 
         if (up && !down) {
-            y = 3;
+            y = MOVEMENT_INFLUENCE;
         } else if (!up && down) {
-            y = -3;
+            y = -MOVEMENT_INFLUENCE;
         }
 
         left = Gdx.input.isKeyPressed(Input.Keys.A);

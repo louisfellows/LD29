@@ -2,11 +2,12 @@ package com.louisfellows.ld29.entities;
 
 import java.util.Random;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.louisfellows.ld29.screens.listeners.BattleScreenListener;
+import com.louisfellows.ld29.screens.listeners.BattleScreenEventsListener;
 import com.louisfellows.ld29.screens.listeners.SubActionListener;
 import com.louisfellows.ld29.util.CollisionEdge;
 
@@ -14,14 +15,16 @@ public class Sub extends Entity implements SubActionListener {
 
     private static final float reloadTime = 1;
     private float loadTime = 0;
-    private int maxSpeed = 50;
+    private int maxSpeed = 60;
     private int health = 64;
     private final Sprite healthBar;
+    private final Sprite reloadBar;
     private boolean defeated;
 
     public Sub(Texture tex, Texture healthBar) {
         super(tex);
         this.healthBar = new Sprite(healthBar);
+        this.reloadBar = new Sprite(healthBar);
     }
 
     @Override
@@ -70,7 +73,7 @@ public class Sub extends Entity implements SubActionListener {
         if (health < 0) {
             health = 0;
             if (!defeated) {
-                for (BattleScreenListener l : listeners) {
+                for (BattleScreenEventsListener l : listeners) {
                     l.outOfHealth(this);
                 }
                 rotate(45);
@@ -84,8 +87,12 @@ public class Sub extends Entity implements SubActionListener {
     @Override
     public void draw(Batch batch) {
         healthBar.setColor(getColor());
-        healthBar.setBounds(getX(), getY() + getHeight(), health, healthBar.getHeight());
+        healthBar.setBounds(getX(), getY() + getHeight() + 5, health, healthBar.getHeight());
         healthBar.draw(batch);
+
+        reloadBar.setColor(new Color(1, 1, 1, 1));
+        reloadBar.setBounds(getX(), getY() + getHeight(), 64 - (loadTime * (64 / reloadTime)), 5);
+        reloadBar.draw(batch);
 
         if (defeated) {
             if (getY() < -35) {
@@ -154,7 +161,7 @@ public class Sub extends Entity implements SubActionListener {
 
             Vector2 position = new Vector2(x, y);
 
-            for (BattleScreenListener l : listeners) {
+            for (BattleScreenEventsListener l : listeners) {
                 l.launchTorpedo(position, direction);
             }
             loadTime = reloadTime;
@@ -170,7 +177,7 @@ public class Sub extends Entity implements SubActionListener {
     }
 
     private void generateExplosions() {
-        for (BattleScreenListener l : listeners) {
+        for (BattleScreenEventsListener l : listeners) {
 
             Random random = new Random();
             float x = getX() + random.nextInt((int) getWidth());

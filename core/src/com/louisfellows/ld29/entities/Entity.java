@@ -4,13 +4,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.louisfellows.ld29.screens.listeners.BattleScreenListener;
+import com.louisfellows.ld29.screens.listeners.BattleScreenEventsListener;
 import com.louisfellows.ld29.util.CollisionEdge;
 
 public abstract class Entity extends Sprite {
     Vector2 direction = new Vector2();
     protected boolean remove = false;
-    protected final Array<BattleScreenListener> listeners = new Array<BattleScreenListener>();
+    protected final Array<BattleScreenEventsListener> listeners = new Array<BattleScreenEventsListener>();
 
     public Entity(Texture tex) {
         super(tex);
@@ -42,11 +42,11 @@ public abstract class Entity extends Sprite {
         return direction;
     }
 
-    public void addListener(BattleScreenListener listener) {
+    public void addListener(BattleScreenEventsListener listener) {
         listeners.add(listener);
     }
 
-    public void removeListener(BattleScreenListener listener) {
+    public void removeListener(BattleScreenEventsListener listener) {
         listeners.removeValue(listener, true);
     }
 

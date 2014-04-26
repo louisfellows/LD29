@@ -16,7 +16,9 @@ public abstract class LD29Screen extends Stage implements Screen {
 
     public static void loadAssets() {
         getAssetManager().setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
-        getAssetManager().load("level.tmx", TiledMap.class);
+        getAssetManager().load("level1.tmx", TiledMap.class);
+        getAssetManager().load("level2.tmx", TiledMap.class);
+        getAssetManager().load("level3.tmx", TiledMap.class);
 
         getAssetManager().setLoader(Texture.class, new TextureLoader(new InternalFileHandleResolver()));
         getAssetManager().load("sub.png", Texture.class);

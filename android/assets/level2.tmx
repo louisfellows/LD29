@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="40" height="22" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="Underwater" tilewidth="32" tileheight="32">
+  <image source="tilemap.png" width="128" height="256"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="40" height="22">
+  <data encoding="base64" compression="zlib">
+   eJztw4EJACAMA8FQrd1/404hJPAHN5LGeJHkp23+kIz9zF+SsRfLJwuR
+  </data>
+ </layer>
+ <layer name="Tile Layer 2" width="40" height="22">
+  <data encoding="base64" compression="zlib">
+   eJztziESwCAQxdDvkJRy/7uyXKAmoiuSmfg3kozG7/Tt2tbfiI9W9JH0sfSx9LH0sfSx9LH0sfSxrm3Wb9Of+gAkvgaQ
+  </data>
+ </layer>
+ <objectgroup name="Object Layer 1" width="40" height="22">
+  <object x="0" y="0" width="32" height="704"/>
+  <object x="1248" y="672" height="32"/>
+  <object x="32" y="672" width="1216" height="32"/>
+  <object x="1248" y="0" width="32" height="704"/>
+  <object x="32" y="0" width="1216" height="32"/>
+ </objectgroup>
+</map>
