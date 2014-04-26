@@ -88,7 +88,12 @@ public class Sub extends Entity implements SubActionListener {
         healthBar.draw(batch);
 
         if (defeated) {
-            generateExplosions();
+            if (getY() < -35) {
+                direction.y = 0;
+                setRemove(true);
+            } else {
+                generateExplosions();
+            }
         }
 
         super.draw(batch);

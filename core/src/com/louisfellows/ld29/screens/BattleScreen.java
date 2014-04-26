@@ -27,6 +27,7 @@ import com.louisfellows.ld29.screens.listeners.BattleScreenListener;
 import com.louisfellows.ld29.screens.listeners.ControlListener;
 import com.louisfellows.ld29.screens.listeners.ControllerListener;
 import com.louisfellows.ld29.screens.listeners.KeyboardListener;
+import com.louisfellows.ld29.sounds.BattleSound;
 import com.louisfellows.ld29.util.CollisionEdge;
 
 public class BattleScreen extends LD29Screen implements BattleScreenListener {
@@ -39,6 +40,7 @@ public class BattleScreen extends LD29Screen implements BattleScreenListener {
     Array<ControlListener> listeners = new Array<ControlListener>();
     Array<Sprite> nonGameSprites = new Array<Sprite>();
     boolean matchComplete = false;
+    BattleScreenListener soundScreen = new BattleSound();
 
     @Override
     public void render(float delta) {
@@ -155,7 +157,7 @@ public class BattleScreen extends LD29Screen implements BattleScreenListener {
 
     @Override
     public void show() {
-        map = assetManager.get("level.tmx");
+        map = getAssetManager().get("level.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
@@ -178,11 +180,12 @@ public class BattleScreen extends LD29Screen implements BattleScreenListener {
     }
 
     private Sub makeSub(Color colour, int x, int y) {
-        Sub sub = new Sub((Texture) assetManager.get("sub.png"), (Texture) assetManager.get("health.png"));
+        Sub sub = new Sub((Texture) getAssetManager().get("sub.png"), (Texture) getAssetManager().get("health.png"));
         sub.setColor(colour);
         sub.setX(x);
         sub.setY(y);
         sub.addListener(this);
+        sub.addListener(soundScreen);
 
         characters.add(sub);
         players.add(sub);
@@ -210,7 +213,7 @@ public class BattleScreen extends LD29Screen implements BattleScreenListener {
 
     @Override
     public void launchTorpedo(Vector2 position, Vector2 direction) {
-        Entity torpedo = new Projectile((Texture) assetManager.get("torpedo.png"));
+        Entity torpedo = new Projectile((Texture) getAssetManager().get("torpedo.png"));
 
         torpedo.setX(position.x + direction.x);
         torpedo.setY(position.y + direction.y);
@@ -236,13 +239,14 @@ public class BattleScreen extends LD29Screen implements BattleScreenListener {
         torpedo.rotate((float) angle - 90f);
 
         torpedo.addListener(this);
+        torpedo.addListener(soundScreen);
 
         characters.add(torpedo);
     }
 
     @Override
     public void drawExplosion(Vector2 position) {
-        Entity explosion = new Explosion((Texture) assetManager.get("explosion.png"));
+        Entity explosion = new Explosion((Texture) getAssetManager().get("explosion.png"));
 
         explosion.setX(position.x);
         explosion.setY(position.y);
@@ -271,7 +275,7 @@ public class BattleScreen extends LD29Screen implements BattleScreenListener {
     }
 
     private void displayVictoryScreen() {
-        Sprite victorySprite = new Sprite((Texture) assetManager.get("victory.png"));
+        Sprite victorySprite = new Sprite((Texture) getAssetManager().get("victory.png"));
         victorySprite.setColor(players.get(0).getColor());
         victorySprite.setX((getWidth() - victorySprite.getWidth()) / 2);
         victorySprite.setY((getHeight() - victorySprite.getHeight()) / 2);

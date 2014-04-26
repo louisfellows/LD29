@@ -11,6 +11,7 @@ public class LD29 extends ApplicationAdapter {
     @Override
     public void create() {
         LD29Screen.loadAssets();
+        LD29Sounds.loadAssets();
 
         currentScreen = new BattleScreen();
         currentScreen.show();
