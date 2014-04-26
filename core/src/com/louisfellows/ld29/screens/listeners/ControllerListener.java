@@ -1,13 +1,22 @@
 package com.louisfellows.ld29.screens.listeners;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 
-public class KeyboardListener extends InputListener implements ControlListener {
+public class ControllerListener implements ControlListener {
     private final Array<SubActionListener> listeners = new Array<SubActionListener>();
+
+    private final Controller controller;
+
+    public ControllerListener() {
+        controller = Controllers.getControllers().get(0);
+    }
+
+    public ControllerListener(int controllerIndex) {
+        controller = Controllers.getControllers().get(controllerIndex);
+    }
 
     /*
      * (non-Javadoc)
@@ -16,47 +25,23 @@ public class KeyboardListener extends InputListener implements ControlListener {
      */
     @Override
     public void checkKeysAndUpdate() {
-        boolean left = Gdx.input.isKeyPressed(Input.Keys.LEFT);
-        boolean right = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
-        boolean up = Gdx.input.isKeyPressed(Input.Keys.UP);
-        boolean down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
 
         float x = 0;
         float y = 0;
 
-        if (left && !right) {
-            x = -3;
-        } else if (!left && right) {
-            x = 3;
-        }
-
-        if (up && !down) {
-            y = 3;
-        } else if (!up && down) {
-            y = -3;
-        }
-
-        left = Gdx.input.isKeyPressed(Input.Keys.A);
-        right = Gdx.input.isKeyPressed(Input.Keys.D);
-        up = Gdx.input.isKeyPressed(Input.Keys.W);
-        down = Gdx.input.isKeyPressed(Input.Keys.S);
-
         float launchX = 0;
         float launchY = 0;
 
-        if (left && !right) {
-            launchX = -1;
-        } else if (!left && right) {
-            launchX = 1;
-        }
+        x = controller.getAxis(1) * 3;
+        y = controller.getAxis(0) * 3;
 
-        if (up && !down) {
-            launchY = 1;
-        } else if (!up && down) {
-            launchY = -1;
-        }
+        if (controller.getAxis(3) > 0.7 || controller.getAxis(3) < -0.7)
+            launchX = controller.getAxis(3) * 3;
 
-        updateListeners(x, y, launchX, launchY);
+        if (controller.getAxis(2) > 0.7 || controller.getAxis(2) < -0.7)
+            launchY = controller.getAxis(2) * 3;
+
+        updateListeners(x, -y, launchX, -launchY);
     }
 
     /*

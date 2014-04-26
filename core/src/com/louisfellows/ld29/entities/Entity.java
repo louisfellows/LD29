@@ -2,61 +2,52 @@ package com.louisfellows.ld29.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Vector2;
-import com.louisfellows.ld29.screens.listeners.EntityActionListener;
+import com.badlogic.gdx.utils.Array;
+import com.louisfellows.ld29.screens.listeners.BattleScreenListener;
+import com.louisfellows.ld29.util.CollisionEdge;
 
-public class Entity extends Sprite implements EntityActionListener {
+public abstract class Entity extends Sprite {
     Vector2 direction = new Vector2();
+    protected boolean remove = false;
+    protected final Array<BattleScreenListener> listeners = new Array<BattleScreenListener>();
 
     public Entity(Texture tex) {
         super(tex);
-        direction.set(10, 10);
+        direction.set(0, 0);
     }
+
+    public abstract void collision(CollisionEdge edge);
+
+    public abstract void hit(CollisionEdge edgeE);
 
     public void update(float delta) {
         setX(getX() + (direction.x * delta));
         setY(getY() + (direction.y * delta));
     }
 
-    public void collision() {
-        direction.x = -(direction.x * 0.75f);
-        direction.y = -(direction.y * 0.75f);
+    public void setRemove(boolean remove) {
+        this.remove = remove;
     }
 
-    public void collision(RectangleMapObject rectangleObject) {
-        getBoundingRectangle().
+    public boolean isRemove() {
+        return remove;
     }
 
-    @Override
-    public void alterXDirection(float influence) {
-        direction.x += influence;
-        if (direction.x > 50) {
-            direction.x = 50;
-        }
-        if (direction.x < -50) {
-            direction.x = -50;
-        }
-
-        if ((influence < 0 && isFlipX()) || (influence > 0 && !isFlipX())) {
-            flip(true, false);
-        }
+    public void setDirection(Vector2 direction) {
+        this.direction = direction;
     }
 
-    @Override
-    public void alterYDirection(float influence) {
-        direction.y += influence;
-        if (direction.y > 50) {
-            direction.y = 50;
-        }
-        if (direction.y < -50) {
-            direction.y = -50;
-        }
+    public Vector2 getDirection() {
+        return direction;
     }
 
-    @Override
-    public void fire(Vector2 direction) {
+    public void addListener(BattleScreenListener listener) {
+        listeners.add(listener);
+    }
 
+    public void removeListener(BattleScreenListener listener) {
+        listeners.removeValue(listener, true);
     }
 
 }

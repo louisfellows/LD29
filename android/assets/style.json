@@ -1,0 +1,144 @@
+{
+	com.badlogic.gdx.graphics.Color: {
+	    white: { r: 1, g: 1, b: 1, a: 1 },
+	    black: { r: 0, g: 0, b: 0, a: 1 }
+	},
+	com.badlogic.gdx.graphics.g2d.BitmapFont: {
+	    default-font: 	{ file: MoolBoran.fnt },
+	    small-font: 	{ file: MoolBoranSm.fnt }
+	},       
+	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+	    default: {
+	        font: 		default-font, 
+	        fontColor:	white, 
+	        background: background
+		},
+		name: {
+			font: 		small-font,
+			fontColor: 	white,
+			background: blackbackground
+		},
+		score: {
+			font: 		default-font,
+			fontColor: 	black,
+			background: scorebubble
+		},
+		noBG: {
+	        font: 		default-font, 
+	        fontColor: 	white
+		}, 
+		noBGSmall: {
+	        font: 		small-font, 
+	        fontColor: 	white
+		},
+		firstTrophy: {
+			font: 		default-font,
+			fontColor: 	black,
+			background: first
+		},
+		secondTrophy: {
+			font: 		default-font,
+			fontColor: 	black,
+			background: second
+		},
+		thirdTrophy: {
+			font: 		default-font,
+			fontColor: 	black,
+			background: third
+		},
+		countdown: {
+			font:		default-font,
+			fontColor:  white,
+			background: blackbackground
+		}
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
+		default: {
+			background: 	background,
+			hScroll:		buttonbgdown,
+			hScrollKnob:	buttonbghover,
+		}
+	},
+	com.louisfellows.bobs.ui.AbsoluteLayoutVerticalPanel$AbsoluteLayoutVerticalPanelStyle: {
+		default: {
+			background: background
+		}
+	},
+	com.louisfellows.bobs.ui.ProgressBar$ProgressBarStyle: {
+		default: {
+			filled: progressfilled,
+			blank: 	progressempty
+		},
+		alt: {
+			filled: progressfilledalt,
+			blank: 	progressempty
+		}
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+		default: {
+			up:		buttonbgup,
+			down:   buttonbgdown,
+			over:   buttonbghover
+		},
+		close: {
+			up:		closeup,
+			down:	closedown,
+			over: 	closehover
+		},
+		details: {
+			up:		detailsup,
+			down:	detailsdown,
+			over: 	detailshover
+		},
+		spliceotron: {
+			up:		splicerup,
+			down:	splicerdown,
+			over: 	splicerhover
+		},
+		race: {
+			up:		raceup,
+			down:	racedown,
+			over: 	racehover
+		}
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+		default: {
+			font:	default-font,
+			up:		buttonbgup,
+			down:   buttonbgdown,
+			over:   buttonbghover
+		}
+	},
+	com.louisfellows.bobs.ui.Track$TrackStyle: {
+		default: {
+			track:  track,
+			line:	trackstartstop
+		},
+		grass: {
+			track:  trackgrass,
+			line:	trackgrassstartstop
+		}
+	},
+	com.louisfellows.bobs.ui.RaceBG$RaceBGStyle: {
+		default: {
+			raceBG: StadiumRaceBG
+		}
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+		default: {
+			background: 	background,
+			titleFont:		default-font,
+			titleFontColor: white
+		}
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
+		default-horizontal: {
+			handle:			buttonbghover
+		},
+		default-vertical: {
+			handle:			buttonbghover
+		}
+	}
+	
+	
+}

@@ -2,7 +2,7 @@ package com.louisfellows.ld29.screens.listeners;
 
 import com.badlogic.gdx.math.Vector2;
 
-public interface EntityActionListener {
+public interface SubActionListener {
 
     public void alterXDirection(float influence);
 

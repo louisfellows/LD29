@@ -18,6 +18,10 @@ public abstract class LD29Screen extends Stage implements Screen {
 
         assetManager.setLoader(Texture.class, new TextureLoader(new InternalFileHandleResolver()));
         assetManager.load("sub.png", Texture.class);
+        assetManager.load("torpedo.png", Texture.class);
+        assetManager.load("explosion.png", Texture.class);
+        assetManager.load("health.png", Texture.class);
+        assetManager.load("victory.png", Texture.class);
 
         assetManager.finishLoading();
     }

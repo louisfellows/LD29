@@ -4,8 +4,10 @@ public interface ControlListener {
 
     public abstract void checkKeysAndUpdate();
 
-    public abstract void addListener(EntityActionListener listener);
+    public abstract void addListener(SubActionListener listener);
 
-    public abstract void removeListener(EntityActionListener listener);
+    public abstract void removeListener(SubActionListener listener);
+
+    public abstract void removeAllListeners();
 
 }
