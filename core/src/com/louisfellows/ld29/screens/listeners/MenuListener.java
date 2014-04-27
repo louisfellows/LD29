@@ -17,7 +17,7 @@ public class MenuListener extends InputListener {
 
     @Override
     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-        if (event.getTarget().getParent() instanceof TextButton) {
+        if (event.getTarget().getParent() instanceof TextButton || event.getTarget() instanceof TextButton) {
             return true;
         }
 
@@ -26,7 +26,10 @@ public class MenuListener extends InputListener {
 
     @Override
     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-        if (event.getTarget().getParent().getName().equals("start")) {
+        if (event.getTarget().getName() != null && event.getTarget().getName().equals("start")) {
+            parentScreen.setNextScreen(ScreenFactory.createBattleScreen(parentScreen.getControlChoices()));
+            LD29.screenComplete();
+        } else if (event.getTarget().getParent().getName() != null && event.getTarget().getParent().getName().equals("start")) {
             parentScreen.setNextScreen(ScreenFactory.createBattleScreen(parentScreen.getControlChoices()));
             LD29.screenComplete();
         }

@@ -41,7 +41,7 @@ public class MenuScreen extends LD29Screen {
         addActor(new Image((Texture) getAssetManager().get("titlebg.png")));
 
         Table mainTable = new Table();
-        mainTable.setBounds(0, 0, getWidth(), getHeight() * 0.6f);
+        mainTable.setBounds(0, 0, getWidth(), getHeight() * 0.9f);
 
         mainTable.add(new Label("Player 1", menuSkin, "red"));
         mainTable.add(new Label("Player 2", menuSkin, "green"));
@@ -83,6 +83,7 @@ public class MenuScreen extends LD29Screen {
                 add(ControllerSelection.NONE);
                 add(ControllerSelection.KEYBOARD_A);
                 add(ControllerSelection.KEYBOARD_B);
+                add(ControllerSelection.KEYBOARD_C);
                 add(ControllerSelection.AI);
             }
         };

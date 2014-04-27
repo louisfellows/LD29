@@ -37,4 +37,5 @@ public class BattleScreenRestartListener extends InputListener {
 
         return super.keyUp(event, keycode);
     }
+
 }

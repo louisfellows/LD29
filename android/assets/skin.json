@@ -56,7 +56,7 @@
 		default: {
 			font:	default-font,
 			fontColorSelected:	black,
-			fontColorUnselected: grey,
+			fontColorUnselected: white,
 			selection: buttonbghover
 		}
 	}
