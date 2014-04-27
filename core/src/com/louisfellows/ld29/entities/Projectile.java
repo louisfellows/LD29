@@ -7,8 +7,15 @@ import com.louisfellows.ld29.util.CollisionEdge;
 
 public class Projectile extends Entity {
 
+    private Sub firedBy;
+
     public Projectile(Texture tex) {
         super(tex);
+    }
+
+    public Projectile(Texture tex, Sub firedBy) {
+        this(tex);
+        this.firedBy = firedBy;
     }
 
     @Override
@@ -22,6 +29,14 @@ public class Projectile extends Entity {
     @Override
     public void hit(CollisionEdge edge) {
         collision(edge);
+    }
+
+    public void setFiredBy(Sub firedBy) {
+        this.firedBy = firedBy;
+    }
+
+    public boolean wasFiredBy(Sub firedBy) {
+        return firedBy.equals(this.firedBy);
     }
 
 }

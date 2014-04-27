@@ -2,7 +2,7 @@ package com.louisfellows.ld29;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.louisfellows.ld29.screens.BattleScreen;
+import com.louisfellows.ld29.screens.MenuScreen;
 
 public class LD29 extends ApplicationAdapter {
     LD29Screen currentScreen;
@@ -13,7 +13,7 @@ public class LD29 extends ApplicationAdapter {
         LD29Screen.loadAssets();
         LD29Sounds.loadAssets();
 
-        currentScreen = new BattleScreen();
+        currentScreen = new MenuScreen();
         currentScreen.show();
 
         Gdx.input.setInputProcessor(currentScreen);
@@ -23,8 +23,10 @@ public class LD29 extends ApplicationAdapter {
     public void render() {
         if (changeScreen) {
             currentScreen.dispose();
-            // currentScreen = //New Screen;
+            currentScreen = currentScreen.getNextScreen();
             changeScreen = false;
+            currentScreen.show();
+            Gdx.input.setInputProcessor(currentScreen);
         }
         currentScreen.render(Gdx.graphics.getDeltaTime());
     }

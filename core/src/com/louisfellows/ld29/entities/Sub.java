@@ -147,18 +147,6 @@ public class Sub extends Entity implements SubActionListener {
             float x = (float) (getX() + (0.5 * getWidth()));
             float y = (float) (getY() + (0.5 * getHeight()));
 
-            if (direction.x > 0)
-                x += getWidth() * 0.75;
-            else if (direction.x < 0) {
-                x -= getWidth() * 0.8;
-            }
-
-            if (direction.y > 0)
-                y += getWidth() * 0.75;
-            else if (direction.y < 0) {
-                y -= getWidth() * 0.75;
-            }
-
             Vector2 position = new Vector2(x, y);
 
             for (BattleScreenEventsListener l : listeners) {

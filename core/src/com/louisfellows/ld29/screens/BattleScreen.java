@@ -16,10 +16,12 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.louisfellows.ld29.LD29Screen;
 import com.louisfellows.ld29.entities.Entity;
 import com.louisfellows.ld29.entities.Explosion;
+import com.louisfellows.ld29.entities.Projectile;
 import com.louisfellows.ld29.entities.Sub;
 import com.louisfellows.ld29.screens.listeners.BattleScreenEventsListener;
 import com.louisfellows.ld29.screens.listeners.ControlListener;
@@ -27,6 +29,7 @@ import com.louisfellows.ld29.screens.listeners.ControllerListener;
 import com.louisfellows.ld29.screens.listeners.KeyboardListener;
 import com.louisfellows.ld29.sounds.BattleSound;
 import com.louisfellows.ld29.util.CollisionEdge;
+import com.louisfellows.ld29.util.ControllerSelection;
 
 public class BattleScreen extends LD29Screen {
 
@@ -40,6 +43,8 @@ public class BattleScreen extends LD29Screen {
     boolean matchComplete = false;
     BattleScreenEventsListener screenSounds = new BattleSound();
     BattleScreenEventsListener screenEvents = new BattleScreenEvents(this);
+    Color[] subColours = { new Color(1, 0, 0, 1), new Color(0, 1, 0, 1), new Color(1, 1, 0, 1), new Color(1, 0, 1, 1) };
+    Vector2[] subStarts = { new Vector2(40, 40), new Vector2(1170, 40), new Vector2(40, 600), new Vector2(1170, 600) };
 
     @Override
     public void render(float delta) {
@@ -112,32 +117,43 @@ public class BattleScreen extends LD29Screen {
                 Entity e2 = characters.get(i);
                 if (!(e2 instanceof Explosion)) {
                     if (!e.equals(e2)) {
-                        if (Intersector.overlaps(e.getBoundingRectangle(), e2.getBoundingRectangle())) {
-
-                            Rectangle intersection = new Rectangle();
-                            Intersector.intersectRectangles(e.getBoundingRectangle(), e2.getBoundingRectangle(), intersection);
-
-                            CollisionEdge edgeE = CollisionEdge.TOP;
-                            ;
-                            CollisionEdge edgeE2 = CollisionEdge.TOP;
-                            ;
-
-                            if (intersection.x > e.getBoundingRectangle().x) {
-                                edgeE = CollisionEdge.RIGHT;
-                                edgeE2 = CollisionEdge.LEFT;
-                            } else if (intersection.y > e.getBoundingRectangle().y) {
-                                edgeE = CollisionEdge.TOP;
-                                edgeE2 = CollisionEdge.BOTTOM;
-                            } else if (intersection.x + intersection.width < e.getBoundingRectangle().x + e.getBoundingRectangle().width) {
-                                edgeE = CollisionEdge.LEFT;
-                                edgeE2 = CollisionEdge.RIGHT;
-                            } else if (intersection.y + intersection.height < e.getBoundingRectangle().y + e.getBoundingRectangle().height) {
-                                edgeE = CollisionEdge.BOTTOM;
-                                edgeE2 = CollisionEdge.TOP;
+                        boolean checkCollision = true;
+                        if (e instanceof Projectile && e2 instanceof Sub) {
+                            if (((Projectile) e).wasFiredBy((Sub) e2)) {
+                                checkCollision = false;
                             }
+                        }
+                        if (e2 instanceof Projectile && e instanceof Sub) {
+                            if (((Projectile) e2).wasFiredBy((Sub) e)) {
+                                checkCollision = false;
+                            }
+                        }
+                        if (checkCollision) {
+                            if (Intersector.overlaps(e.getBoundingRectangle(), e2.getBoundingRectangle())) {
 
-                            e.hit(edgeE);
-                            e2.hit(edgeE2);
+                                Rectangle intersection = new Rectangle();
+                                Intersector.intersectRectangles(e.getBoundingRectangle(), e2.getBoundingRectangle(), intersection);
+
+                                CollisionEdge edgeE = CollisionEdge.TOP;
+                                CollisionEdge edgeE2 = CollisionEdge.TOP;
+
+                                if (intersection.x > e.getBoundingRectangle().x) {
+                                    edgeE = CollisionEdge.RIGHT;
+                                    edgeE2 = CollisionEdge.LEFT;
+                                } else if (intersection.y > e.getBoundingRectangle().y) {
+                                    edgeE = CollisionEdge.TOP;
+                                    edgeE2 = CollisionEdge.BOTTOM;
+                                } else if (intersection.x + intersection.width < e.getBoundingRectangle().x + e.getBoundingRectangle().width) {
+                                    edgeE = CollisionEdge.LEFT;
+                                    edgeE2 = CollisionEdge.RIGHT;
+                                } else if (intersection.y + intersection.height < e.getBoundingRectangle().y + e.getBoundingRectangle().height) {
+                                    edgeE = CollisionEdge.BOTTOM;
+                                    edgeE2 = CollisionEdge.TOP;
+                                }
+
+                                e.hit(edgeE);
+                                e2.hit(edgeE2);
+                            }
                         }
                     }
                 }
@@ -162,22 +178,6 @@ public class BattleScreen extends LD29Screen {
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
-
-        Sub sub = makeSub(new Color(1, 0, 0, 1), 40, 40);
-
-        ControllerListener l = new ControllerListener();
-        l.addListener(sub);
-        listeners.add(l);
-
-        sub = makeSub(new Color(0, 1, 0, 1), 1170, 40);
-
-        KeyboardListener kl = new KeyboardListener();
-        kl.addListener(sub);
-        listeners.add(kl);
-
-        sub = makeSub(new Color(0, 0, 1, 1), 1170, 600);
-        sub = makeSub(new Color(1, 0, 1, 1), 40, 600);
-
     }
 
     private Sub makeSub(Color colour, int x, int y) {
@@ -221,4 +221,48 @@ public class BattleScreen extends LD29Screen {
         characters.add(entity);
     }
 
+    public void setupPlayers(ControllerSelection[] controllers) {
+
+        for (int i = 0; i < 4; i++) {
+            if (controllers[i] != ControllerSelection.NONE) {
+                Sub sub = makeSub(subColours[i], (int) subStarts[i].x, (int) subStarts[i].y);
+                switch (controllers[i]) {
+                case KEYBOARD_A:
+                    KeyboardListener kl = new KeyboardListener();
+                    kl.addListener(sub);
+                    listeners.add(kl);
+                    break;
+                case KEYBOARD_B:
+                    KeyboardListener kl_b = new KeyboardListener();
+                    kl_b.addListener(sub);
+                    listeners.add(kl_b);
+                    break;
+                case CONTROLLER_1:
+                    ControllerListener l1 = new ControllerListener(0);
+                    l1.addListener(sub);
+                    listeners.add(l1);
+                    break;
+                case CONTROLLER_2:
+                    ControllerListener l2 = new ControllerListener(1);
+                    l2.addListener(sub);
+                    listeners.add(l2);
+                    break;
+                case CONTROLLER_3:
+                    ControllerListener l3 = new ControllerListener(2);
+                    l3.addListener(sub);
+                    listeners.add(l3);
+                    break;
+                case CONTROLLER_4:
+                    ControllerListener l4 = new ControllerListener(3);
+                    l4.addListener(sub);
+                    listeners.add(l4);
+                    break;
+                case AI:
+                    // DO NOTHING CURRENTLY
+                    break;
+                }
+            }
+        }
+
+    }
 }
