@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 
-public class KeyboardListener extends InputListener implements ControlListener {
+public class KeyboardListenerB extends InputListener implements ControlListener {
     private static final int MOVEMENT_INFLUENCE = 1;
     private final Array<SubActionListener> listeners = new Array<SubActionListener>();
 
@@ -16,11 +16,11 @@ public class KeyboardListener extends InputListener implements ControlListener {
      * @see com.louisfellows.ld29.screens.listeners.ControlListener#checkKeys()
      */
     @Override
-    public void checkKeysAndUpdate() {
-        boolean left = Gdx.input.isKeyPressed(Input.Keys.LEFT);
-        boolean right = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
-        boolean up = Gdx.input.isKeyPressed(Input.Keys.UP);
-        boolean down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
+    public void checkKeysAndUpdate(float delta) {
+        boolean left = Gdx.input.isKeyPressed(Input.Keys.A);
+        boolean right = Gdx.input.isKeyPressed(Input.Keys.D);
+        boolean up = Gdx.input.isKeyPressed(Input.Keys.W);
+        boolean down = Gdx.input.isKeyPressed(Input.Keys.S);
 
         float x = 0;
         float y = 0;
@@ -37,10 +37,10 @@ public class KeyboardListener extends InputListener implements ControlListener {
             y = -MOVEMENT_INFLUENCE;
         }
 
-        left = Gdx.input.isKeyPressed(Input.Keys.A);
-        right = Gdx.input.isKeyPressed(Input.Keys.D);
-        up = Gdx.input.isKeyPressed(Input.Keys.W);
-        down = Gdx.input.isKeyPressed(Input.Keys.S);
+        left = Gdx.input.isKeyPressed(Input.Keys.F);
+        right = Gdx.input.isKeyPressed(Input.Keys.H);
+        up = Gdx.input.isKeyPressed(Input.Keys.T);
+        down = Gdx.input.isKeyPressed(Input.Keys.G);
 
         float launchX = 0;
         float launchY = 0;

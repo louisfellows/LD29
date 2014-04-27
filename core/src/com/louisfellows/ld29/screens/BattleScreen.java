@@ -24,16 +24,20 @@ import com.louisfellows.ld29.entities.Explosion;
 import com.louisfellows.ld29.entities.Projectile;
 import com.louisfellows.ld29.entities.Sub;
 import com.louisfellows.ld29.entities.Treasure;
+import com.louisfellows.ld29.screens.listeners.AIListener;
 import com.louisfellows.ld29.screens.listeners.BattleScreenEventsListener;
 import com.louisfellows.ld29.screens.listeners.ControlListener;
 import com.louisfellows.ld29.screens.listeners.ControllerListener;
-import com.louisfellows.ld29.screens.listeners.KeyboardListener;
+import com.louisfellows.ld29.screens.listeners.KeyboardListenerA;
+import com.louisfellows.ld29.screens.listeners.KeyboardListenerB;
+import com.louisfellows.ld29.screens.listeners.KeyboardListenerC;
 import com.louisfellows.ld29.sounds.BattleSound;
 import com.louisfellows.ld29.util.CollisionEdge;
 import com.louisfellows.ld29.util.ControllerSelection;
 
 public class BattleScreen extends LD29Screen {
 
+    private static final int OBJECT_LAYER_ID = 2;
     TiledMap map = new TiledMap();
     MapRenderer mapRenderer;
     OrthographicCamera camera;
@@ -48,6 +52,7 @@ public class BattleScreen extends LD29Screen {
     Color[] subColours = { new Color(1, 0, 0, 1), new Color(0, 1, 0, 1), new Color(1, 1, 0, 1), new Color(1, 0, 1, 1) };
     Vector2[] subStarts = { new Vector2(40, 40), new Vector2(1170, 40), new Vector2(40, 600), new Vector2(1170, 600) };
     float timeTillBonus = 15f;
+    ControllerSelection[] controllers;
 
     @Override
     public void render(float delta) {
@@ -66,7 +71,7 @@ public class BattleScreen extends LD29Screen {
         }
 
         for (ControlListener l : listeners) {
-            l.checkKeysAndUpdate();
+            l.checkKeysAndUpdate(delta);
         }
 
         getSpriteBatch().begin();
@@ -81,8 +86,7 @@ public class BattleScreen extends LD29Screen {
     }
 
     private void actorUpdate(float delta) {
-        int objectLayerId = 2;
-        MapLayer collisionObjectLayer = map.getLayers().get(objectLayerId);
+        MapLayer collisionObjectLayer = map.getLayers().get(OBJECT_LAYER_ID);
         MapObjects objects = collisionObjectLayer.getObjects();
 
         for (Entity e : characters) {
@@ -246,19 +250,26 @@ public class BattleScreen extends LD29Screen {
 
     public void setupPlayers(ControllerSelection[] controllers) {
 
+        this.controllers = controllers;
+
         for (int i = 0; i < 4; i++) {
             if (controllers[i] != ControllerSelection.NONE) {
                 Sub sub = makeSub(subColours[i], (int) subStarts[i].x, (int) subStarts[i].y);
                 switch (controllers[i]) {
                 case KEYBOARD_A:
-                    KeyboardListener kl = new KeyboardListener();
+                    KeyboardListenerA kl = new KeyboardListenerA();
                     kl.addListener(sub);
                     listeners.add(kl);
                     break;
                 case KEYBOARD_B:
-                    KeyboardListener kl_b = new KeyboardListener();
+                    KeyboardListenerB kl_b = new KeyboardListenerB();
                     kl_b.addListener(sub);
                     listeners.add(kl_b);
+                    break;
+                case KEYBOARD_C:
+                    KeyboardListenerC kl_c = new KeyboardListenerC();
+                    kl_c.addListener(sub);
+                    listeners.add(kl_c);
                     break;
                 case CONTROLLER_1:
                     ControllerListener l1 = new ControllerListener(0);
@@ -281,11 +292,30 @@ public class BattleScreen extends LD29Screen {
                     listeners.add(l4);
                     break;
                 case AI:
-                    // DO NOTHING CURRENTLY
+                    AIListener ai = new AIListener(this);
+                    ai.addListener(sub);
+                    listeners.add(ai);
+                    break;
+                default:
                     break;
                 }
             }
         }
+    }
 
+    public Array<Vector2> getPlayerLocations() {
+        Array<Vector2> vs = new Array<Vector2>();
+        for (Sub s : players) {
+            vs.add(new Vector2(s.getX(), s.getY()));
+        }
+        return vs;
+    }
+
+    public MapLayer getMapObjectLayer() {
+        return map.getLayers().get(OBJECT_LAYER_ID);
+    }
+
+    public ControllerSelection[] getControllers() {
+        return controllers;
     }
 }

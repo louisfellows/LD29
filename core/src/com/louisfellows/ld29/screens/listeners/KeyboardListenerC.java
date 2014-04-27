@@ -1,23 +1,14 @@
 package com.louisfellows.ld29.screens.listeners;
 
-import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 
-public class ControllerListener implements ControlListener {
+public class KeyboardListenerC extends InputListener implements ControlListener {
     private static final int MOVEMENT_INFLUENCE = 1;
     private final Array<SubActionListener> listeners = new Array<SubActionListener>();
-
-    private final Controller controller;
-
-    public ControllerListener() {
-        controller = Controllers.getControllers().get(0);
-    }
-
-    public ControllerListener(int controllerIndex) {
-        controller = Controllers.getControllers().get(controllerIndex);
-    }
 
     /*
      * (non-Javadoc)
@@ -26,29 +17,47 @@ public class ControllerListener implements ControlListener {
      */
     @Override
     public void checkKeysAndUpdate(float delta) {
+        boolean left = Gdx.input.isKeyPressed(Input.Keys.L);
+        boolean right = Gdx.input.isKeyPressed(Input.Keys.COMMA);
+        boolean up = Gdx.input.isKeyPressed(Input.Keys.P);
+        boolean down = Gdx.input.isKeyPressed(Input.Keys.SEMICOLON);
 
         float x = 0;
         float y = 0;
 
+        if (left && !right) {
+            x = -MOVEMENT_INFLUENCE;
+        } else if (!left && right) {
+            x = MOVEMENT_INFLUENCE;
+        }
+
+        if (up && !down) {
+            y = MOVEMENT_INFLUENCE;
+        } else if (!up && down) {
+            y = -MOVEMENT_INFLUENCE;
+        }
+
+        left = Gdx.input.isKeyPressed(Input.Keys.LEFT);
+        right = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
+        up = Gdx.input.isKeyPressed(Input.Keys.UP);
+        down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
+
         float launchX = 0;
         float launchY = 0;
 
-        x = controller.getAxis(1) * MOVEMENT_INFLUENCE;
-        y = controller.getAxis(0) * MOVEMENT_INFLUENCE;
-
-        if (controller.getAxis(3) > 0.7) {
-            launchX = 1;
-        } else if (controller.getAxis(3) < -0.7) {
+        if (left && !right) {
             launchX = -1;
+        } else if (!left && right) {
+            launchX = 1;
         }
 
-        if (controller.getAxis(2) > 0.7) {
+        if (up && !down) {
             launchY = 1;
-        } else if (controller.getAxis(2) < -0.7) {
+        } else if (!up && down) {
             launchY = -1;
         }
 
-        updateListeners(x, -y, launchX, -launchY);
+        updateListeners(x, y, launchX, launchY);
     }
 
     /*

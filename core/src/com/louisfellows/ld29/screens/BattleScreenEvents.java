@@ -12,6 +12,7 @@ import com.louisfellows.ld29.entities.Sub;
 import com.louisfellows.ld29.entities.Treasure;
 import com.louisfellows.ld29.entities.bonuses.BonusFactory;
 import com.louisfellows.ld29.screens.listeners.BattleScreenEventsListener;
+import com.louisfellows.ld29.screens.listeners.BattleScreenRestartListener;
 import com.louisfellows.ld29.screens.listeners.ControlListener;
 
 public class BattleScreenEvents implements BattleScreenEventsListener {
@@ -111,6 +112,8 @@ public class BattleScreenEvents implements BattleScreenEventsListener {
         victorySprite.setX((battleScreen.getWidth() - victorySprite.getWidth()) / 2);
         victorySprite.setY((battleScreen.getHeight() - victorySprite.getHeight()) / 2);
         battleScreen.nonGameSprites.add(victorySprite);
+        BattleScreenRestartListener restartListener = new BattleScreenRestartListener(battleScreen);
+        battleScreen.addListener(restartListener);
     }
 
     @Override

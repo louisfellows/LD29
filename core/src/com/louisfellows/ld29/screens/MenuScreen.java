@@ -68,23 +68,11 @@ public class MenuScreen extends LD29Screen {
 
         mainTable.row().padTop(40f);
 
-        TextButton exitButton = new TextButton("Exit", menuSkin);
-        exitButton.padLeft(10f);
-        exitButton.padRight(10f);
-        exitButton.setName("exit");
-        mainTable.add(exitButton);
-
         TextButton startButton = new TextButton("Start", menuSkin);
         startButton.padLeft(30f);
         startButton.padRight(30f);
         startButton.setName("start");
-        mainTable.add(startButton).colspan(2);
-
-        TextButton helpButton = new TextButton("Help", menuSkin);
-        helpButton.padLeft(10f);
-        helpButton.padRight(10f);
-        helpButton.setName("help");
-        mainTable.add(helpButton);
+        mainTable.add(startButton).colspan(4);
 
         addActor(mainTable);
     }
