@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public class ControllerListener implements ControlListener {
-    private static final int MOVEMENT_INFLUENCE = 5;
+    private static final int MOVEMENT_INFLUENCE = 1;
     private final Array<SubActionListener> listeners = new Array<SubActionListener>();
 
     private final Controller controller;
@@ -36,11 +36,17 @@ public class ControllerListener implements ControlListener {
         x = controller.getAxis(1) * MOVEMENT_INFLUENCE;
         y = controller.getAxis(0) * MOVEMENT_INFLUENCE;
 
-        if (controller.getAxis(3) > 0.7 || controller.getAxis(3) < -0.7)
-            launchX = controller.getAxis(3);
+        if (controller.getAxis(3) > 0.7) {
+            launchX = 1;
+        } else if (controller.getAxis(3) < -0.7) {
+            launchX = -1;
+        }
 
-        if (controller.getAxis(2) > 0.7 || controller.getAxis(2) < -0.7)
-            launchY = controller.getAxis(2);
+        if (controller.getAxis(2) > 0.7) {
+            launchY = 1;
+        } else if (controller.getAxis(2) < -0.7) {
+            launchY = -1;
+        }
 
         updateListeners(x, -y, launchX, -launchY);
     }

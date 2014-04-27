@@ -6,6 +6,7 @@ import com.louisfellows.ld29.util.CollisionEdge;
 public class Explosion extends Entity {
 
     private float age = 0;
+    private float ttl = 0.1f;
 
     public Explosion(Texture tex) {
         super(tex);
@@ -24,9 +25,13 @@ public class Explosion extends Entity {
     @Override
     public void update(float delta) {
         age += delta;
-        if (age > 0.1) {
+        if (age > ttl) {
             setRemove(true);
         }
         super.update(delta);
+    }
+
+    public void setTtl(float ttl) {
+        this.ttl = ttl;
     }
 }

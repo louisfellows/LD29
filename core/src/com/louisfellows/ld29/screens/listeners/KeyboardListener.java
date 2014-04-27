@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 
 public class KeyboardListener extends InputListener implements ControlListener {
-    private static final int MOVEMENT_INFLUENCE = 5;
+    private static final int MOVEMENT_INFLUENCE = 1;
     private final Array<SubActionListener> listeners = new Array<SubActionListener>();
 
     /*

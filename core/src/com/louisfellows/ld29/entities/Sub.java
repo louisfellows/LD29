@@ -7,19 +7,24 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+import com.louisfellows.ld29.entities.bonuses.Bonus;
+import com.louisfellows.ld29.entities.bonuses.Effect;
 import com.louisfellows.ld29.screens.listeners.BattleScreenEventsListener;
 import com.louisfellows.ld29.screens.listeners.SubActionListener;
 import com.louisfellows.ld29.util.CollisionEdge;
 
 public class Sub extends Entity implements SubActionListener {
 
-    private static final float reloadTime = 1;
+    private float reloadTime = 1;
+    private int acceleration = 8;
     private float loadTime = 0;
-    private int maxSpeed = 60;
+    private int maxSpeed = 75;
     private int health = 64;
     private final Sprite healthBar;
     private final Sprite reloadBar;
     private boolean defeated;
+    private final Array<Bonus> bonuses = new Array<Bonus>();
 
     public Sub(Texture tex, Texture healthBar) {
         super(tex);
@@ -113,11 +118,35 @@ public class Sub extends Entity implements SubActionListener {
         if (loadTime < 0) {
             loadTime = 0;
         }
+        for (Bonus b : bonuses) {
+            b.update(delta);
+            if (b.isExpired()) {
+                Effect e = b.onExpire();
+                bonuses.removeValue(b, true);
+                processEffect(e);
+            }
+        }
+    }
+
+    private void processEffect(Effect e) {
+        switch (e.getStat()) {
+        case ACCELERATION:
+            acceleration += e.getAmount();
+            break;
+        case FIRING_SPEED:
+            reloadTime += e.getAmount();
+            break;
+        case HEALTH:
+            health += e.getAmount();
+            break;
+        case MAX_SPEED:
+            maxSpeed += e.getAmount();
+        }
     }
 
     @Override
     public void alterXDirection(float influence) {
-        direction.x += influence;
+        direction.x += (influence * acceleration);
         if (direction.x > maxSpeed) {
             direction.x = maxSpeed;
         }
@@ -132,7 +161,7 @@ public class Sub extends Entity implements SubActionListener {
 
     @Override
     public void alterYDirection(float influence) {
-        direction.y += influence;
+        direction.y += (influence * acceleration);
         if (direction.y > maxSpeed) {
             direction.y = maxSpeed;
         }
@@ -150,7 +179,7 @@ public class Sub extends Entity implements SubActionListener {
             Vector2 position = new Vector2(x, y);
 
             for (BattleScreenEventsListener l : listeners) {
-                l.launchTorpedo(position, direction);
+                l.launchTorpedo(position, direction, this);
             }
             loadTime = reloadTime;
         }
@@ -179,4 +208,8 @@ public class Sub extends Entity implements SubActionListener {
         return defeated;
     }
 
+    public void applyBonus(Bonus bonus) {
+        bonuses.add(bonus);
+        processEffect(bonus.onPickup());
+    }
 }

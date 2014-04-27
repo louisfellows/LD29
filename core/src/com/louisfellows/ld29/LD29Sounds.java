@@ -12,6 +12,9 @@ public class LD29Sounds {
         getAssetManager().setLoader(Sound.class, new SoundLoader(new InternalFileHandleResolver()));
         getAssetManager().load("bang.wav", Sound.class);
         getAssetManager().load("torpedo.wav", Sound.class);
+        getAssetManager().load("victory.wav", Sound.class);
+        getAssetManager().load("powerup.wav", Sound.class);
+        getAssetManager().load("powerdown.wav", Sound.class);
 
         getAssetManager().finishLoading();
     }

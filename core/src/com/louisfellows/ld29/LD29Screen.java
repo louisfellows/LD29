@@ -3,10 +3,8 @@ package com.louisfellows.ld29;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
-import com.badlogic.gdx.assets.loaders.SoundLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -30,9 +28,15 @@ public abstract class LD29Screen extends Stage implements Screen {
         getAssetManager().load("health.png", Texture.class);
         getAssetManager().load("victory.png", Texture.class);
         getAssetManager().load("titlebg.png", Texture.class);
-
-        getAssetManager().setLoader(Sound.class, new SoundLoader(new InternalFileHandleResolver()));
-        getAssetManager().load("bang.wav", Sound.class);
+        getAssetManager().load("treasure.png", Texture.class);
+        getAssetManager().load("healthup.png", Texture.class);
+        getAssetManager().load("healthdown.png", Texture.class);
+        getAssetManager().load("reloadup.png", Texture.class);
+        getAssetManager().load("reloaddown.png", Texture.class);
+        getAssetManager().load("speedup.png", Texture.class);
+        getAssetManager().load("speeddown.png", Texture.class);
+        getAssetManager().load("accup.png", Texture.class);
+        getAssetManager().load("accdown.png", Texture.class);
 
         getAssetManager().setLoader(Skin.class, new SkinLoader(new InternalFileHandleResolver()));
         getAssetManager().load("skin.json", Skin.class);

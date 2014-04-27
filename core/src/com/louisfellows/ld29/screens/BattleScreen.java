@@ -23,6 +23,7 @@ import com.louisfellows.ld29.entities.Entity;
 import com.louisfellows.ld29.entities.Explosion;
 import com.louisfellows.ld29.entities.Projectile;
 import com.louisfellows.ld29.entities.Sub;
+import com.louisfellows.ld29.entities.Treasure;
 import com.louisfellows.ld29.screens.listeners.BattleScreenEventsListener;
 import com.louisfellows.ld29.screens.listeners.ControlListener;
 import com.louisfellows.ld29.screens.listeners.ControllerListener;
@@ -39,12 +40,14 @@ public class BattleScreen extends LD29Screen {
     Array<Entity> characters = new Array<Entity>();
     Array<Sub> players = new Array<Sub>();
     Array<ControlListener> listeners = new Array<ControlListener>();
+    Array<BattleScreenEventsListener> eventListeners = new Array<BattleScreenEventsListener>();
     Array<Sprite> nonGameSprites = new Array<Sprite>();
     boolean matchComplete = false;
     BattleScreenEventsListener screenSounds = new BattleSound();
     BattleScreenEventsListener screenEvents = new BattleScreenEvents(this);
     Color[] subColours = { new Color(1, 0, 0, 1), new Color(0, 1, 0, 1), new Color(1, 1, 0, 1), new Color(1, 0, 1, 1) };
     Vector2[] subStarts = { new Vector2(40, 40), new Vector2(1170, 40), new Vector2(40, 600), new Vector2(1170, 600) };
+    float timeTillBonus = 15f;
 
     @Override
     public void render(float delta) {
@@ -52,6 +55,15 @@ public class BattleScreen extends LD29Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         mapRenderer.setView(camera);
         mapRenderer.render();
+
+        timeTillBonus -= delta;
+        if (timeTillBonus < 0) {
+            timeTillBonus = 15f;
+
+            for (BattleScreenEventsListener b : eventListeners) {
+                b.produceBonus();
+            }
+        }
 
         for (ControlListener l : listeners) {
             l.checkKeysAndUpdate();
@@ -128,31 +140,40 @@ public class BattleScreen extends LD29Screen {
                                 checkCollision = false;
                             }
                         }
+
                         if (checkCollision) {
                             if (Intersector.overlaps(e.getBoundingRectangle(), e2.getBoundingRectangle())) {
 
-                                Rectangle intersection = new Rectangle();
-                                Intersector.intersectRectangles(e.getBoundingRectangle(), e2.getBoundingRectangle(), intersection);
+                                if (e instanceof Treasure && e2 instanceof Sub) {
+                                    ((Sub) e2).applyBonus(((Treasure) e).getBonus());
+                                    ((Treasure) e).hit(CollisionEdge.TOP);
+                                } else if (e2 instanceof Treasure && e instanceof Sub) {
+                                    ((Sub) e).applyBonus(((Treasure) e2).getBonus());
+                                    ((Treasure) e2).hit(CollisionEdge.TOP);
+                                } else {
+                                    Rectangle intersection = new Rectangle();
+                                    Intersector.intersectRectangles(e.getBoundingRectangle(), e2.getBoundingRectangle(), intersection);
 
-                                CollisionEdge edgeE = CollisionEdge.TOP;
-                                CollisionEdge edgeE2 = CollisionEdge.TOP;
+                                    CollisionEdge edgeE = CollisionEdge.TOP;
+                                    CollisionEdge edgeE2 = CollisionEdge.TOP;
 
-                                if (intersection.x > e.getBoundingRectangle().x) {
-                                    edgeE = CollisionEdge.RIGHT;
-                                    edgeE2 = CollisionEdge.LEFT;
-                                } else if (intersection.y > e.getBoundingRectangle().y) {
-                                    edgeE = CollisionEdge.TOP;
-                                    edgeE2 = CollisionEdge.BOTTOM;
-                                } else if (intersection.x + intersection.width < e.getBoundingRectangle().x + e.getBoundingRectangle().width) {
-                                    edgeE = CollisionEdge.LEFT;
-                                    edgeE2 = CollisionEdge.RIGHT;
-                                } else if (intersection.y + intersection.height < e.getBoundingRectangle().y + e.getBoundingRectangle().height) {
-                                    edgeE = CollisionEdge.BOTTOM;
-                                    edgeE2 = CollisionEdge.TOP;
+                                    if (intersection.x > e.getBoundingRectangle().x) {
+                                        edgeE = CollisionEdge.RIGHT;
+                                        edgeE2 = CollisionEdge.LEFT;
+                                    } else if (intersection.y > e.getBoundingRectangle().y) {
+                                        edgeE = CollisionEdge.TOP;
+                                        edgeE2 = CollisionEdge.BOTTOM;
+                                    } else if (intersection.x + intersection.width < e.getBoundingRectangle().x + e.getBoundingRectangle().width) {
+                                        edgeE = CollisionEdge.LEFT;
+                                        edgeE2 = CollisionEdge.RIGHT;
+                                    } else if (intersection.y + intersection.height < e.getBoundingRectangle().y + e.getBoundingRectangle().height) {
+                                        edgeE = CollisionEdge.BOTTOM;
+                                        edgeE2 = CollisionEdge.TOP;
+                                    }
+
+                                    e.hit(edgeE);
+                                    e2.hit(edgeE2);
                                 }
-
-                                e.hit(edgeE);
-                                e2.hit(edgeE2);
                             }
                         }
                     }
@@ -178,6 +199,8 @@ public class BattleScreen extends LD29Screen {
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
+        eventListeners.add(screenEvents);
+        eventListeners.add(screenSounds);
     }
 
     private Sub makeSub(Color colour, int x, int y) {
