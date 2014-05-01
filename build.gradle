@@ -80,6 +80,7 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+        compile "com.louisfellows:libgdxaiutils:0.0.1-SNAPSHOT"
     }
 }
 

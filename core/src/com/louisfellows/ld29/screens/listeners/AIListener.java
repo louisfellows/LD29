@@ -5,10 +5,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.OrderedMap;
-import com.louisfellows.ld29.ai.AStarNode;
-import com.louisfellows.ld29.ai.AStarPathfinder;
 import com.louisfellows.ld29.entities.Sub;
 import com.louisfellows.ld29.screens.BattleScreen;
+import com.louisfellows.libgdxaiutils.AStarPathfinder;
 
 public class AIListener implements ControlListener {
 
@@ -71,13 +70,13 @@ public class AIListener implements ControlListener {
     private Vector2 action(Vector2 start, Vector2 goal) {
         AStarPathfinder pf = new AStarPathfinder(blockedSquare);
 
-        Array<AStarNode> nodes = pf.calculate(new AStarNode(start.x, start.y), new AStarNode(goal.x, goal.y));
+        Array<Vector2> path = pf.calculate(start, goal);
 
         int x = 0;
         int y = 0;
 
-        if (nodes.size > 2) {
-            AStarNode n = nodes.get(1);
+        if (path.size > 2) {
+            Vector2 n = path.get(1);
 
             if (start.x > n.x) {
                 x = -MOVEMENT_INFLUENCE;
